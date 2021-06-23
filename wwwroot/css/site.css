@@ -73,3 +73,7 @@ body {
 .user-photo {
   width: 50px;
 }
+
+.user-photo-small {
+  width: 30px;
+}

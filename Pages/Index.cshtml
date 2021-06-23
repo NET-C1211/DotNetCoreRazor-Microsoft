@@ -6,19 +6,19 @@
 
 <div>
     <h1>ASP.NET Core and Microsoft Graph</h1>
-    <p class="lead">Access Microsoft Graph data using ASP.NET Core.</p>
+    <br />
     @if (User.Identity.IsAuthenticated)
     {
         <h4>
-            @if (Model.Photo != null)
+            @if (Model.UserPhoto != null)
             {
-                <img src="data:image/jpeg;base64, @Model.Photo" class="user-photo nav-profile-photo rounded-circle align-self-center mr-2" />
+                <img src="data:image/jpeg;base64, @Model.UserPhoto" class="user-photo nav-profile-photo rounded-circle align-self-center mr-2" />
             }
             else
             {
                 <p>No Pic available for this user. Upload a pic for this user in the Azure portal.</p>
             }
-            Welcome @Model.DisplayName!</h4>
+            Welcome @Model.UserDisplayName!</h4>
     }
     else
     {

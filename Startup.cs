@@ -5,19 +5,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
 using Microsoft.Identity.Web.UI;
 using Microsoft.AspNetCore.Authorization;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Azure;
+using DotNetCoreRazor_MSGraph.Graph;
 
 namespace DotNetCoreRazor_MSGraph
 {
@@ -58,7 +56,9 @@ namespace DotNetCoreRazor_MSGraph
             services.AddRazorPages(options => {
                 options.Conventions.AuthorizePage("/Index");
             })
-            .AddMicrosoftIdentityUI();          
+            .AddMicrosoftIdentityUI();  
+
+            services.AddScoped<GraphUtils>();        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DotNetCoreRazor_MSGraph.Graph;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
@@ -12,49 +12,24 @@ using Microsoft.Identity.Web;
 
 namespace DotNetCoreRazor_MSGraph.Pages
 {
-    [AuthorizeForScopes(Scopes = new[] { "user.read" })]
-    [Authorize]
+    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly GraphServiceClient _graphServiceClient;
-        public string DisplayName { get; private set; } = "";
-        public string Photo { get; private set; }
+        private readonly GraphUtils _graphUtils;
+        public string UserDisplayName { get; private set; } = "";
+        public string UserPhoto { get; private set; }
 
-        public IndexModel(ILogger<IndexModel> logger, GraphServiceClient graphServiceClient)
+        public IndexModel(GraphUtils graphUtils)
         {
-            _logger = logger;
-            _graphServiceClient = graphServiceClient;
+            _graphUtils = graphUtils;
         }
 
         public async Task OnGetAsync()
         {
-            User currentUser = null;
-
-            try
-            {
-                currentUser = await _graphServiceClient.Me.Request().GetAsync();
-                DisplayName = currentUser.DisplayName;
-            }
-            // Catch CAE exception from Graph SDK
-            catch (ServiceException svcex) when (svcex.Message.Contains("Continuous access evaluation resulted in claims challenge"))
-            {
-                _logger.LogInformation("Error calling Graph /me");
-            }
-
-            try
-            {
-                // Get user photo
-                using (var photoStream = await _graphServiceClient.Me.Photo.Content.Request().GetAsync())
-                {
-                    byte[] photo = ((MemoryStream)photoStream).ToArray();
-                    Photo = Convert.ToBase64String(photo);
-                }
-            }
-            catch (Exception pex)
-            {
-                Console.WriteLine($"{pex.Message}");
-            }
+            var displayName = await _graphUtils.GetUserDisplayName(); 
+            UserDisplayName = displayName.Split(' ')[0];
+            UserPhoto = await _graphUtils.GetUserProfileImage();
         }
     }
 }
