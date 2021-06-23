@@ -97,19 +97,17 @@ namespace DotNetCoreRazor_MSGraph.Graph
                     .OrderBy("receivedDateTime")
                     .GetAsync();
 
-            string skipValue = "0";
-            if (pagedMessages.NextPageRequest != null) 
-            {
-                skipValue = pagedMessages
-                    .NextPageRequest
-                    .QueryOptions?
-                    .FirstOrDefault(
-                        x => string.Equals("$skip", WebUtility.UrlDecode(x.Name), StringComparison.InvariantCultureIgnoreCase))?
-                    .Value;
-            }
+            var skipValue = pagedMessages
+                .NextPageRequest?
+                .QueryOptions?
+                .FirstOrDefault(
+                    x => string.Equals("$skip", WebUtility.UrlDecode(x.Name), StringComparison.InvariantCultureIgnoreCase))?
+                .Value ?? "0";
+
             _logger.LogInformation($"skipValue: {skipValue}");
 
             return (Messages: pagedMessages, Skip: int.Parse(skipValue));
         }
+
     }
 }
