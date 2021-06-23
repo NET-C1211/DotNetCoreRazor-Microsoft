@@ -20,7 +20,6 @@
                 <br />
             }
             @if (Model.Skip != 0) {
-                <div>@Model.Skip</div>
                 <a asp-page="/Email" asp-route-skip="@Model.Skip" class="btn btn-primary">Next Page</a>
             }
         }

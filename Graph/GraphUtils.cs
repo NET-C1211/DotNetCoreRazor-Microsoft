@@ -81,7 +81,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
         }
 
-        public async Task<(IList<Message> Messages, int Skip)> GetUserMessagesPage(int pageSize, int skip)
+        public async Task<(IList<Message> Messages, int Skip)> GetUserMessagesPage(int pageSize, int skip = 0)
         {
             var pagedMessages = await _graphServiceClient.Me.Messages
                     .Request()
@@ -107,6 +107,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
                         x => string.Equals("$skip", WebUtility.UrlDecode(x.Name), StringComparison.InvariantCultureIgnoreCase))?
                     .Value;
             }
+            _logger.LogInformation($"skipValue: {skipValue}");
 
             return (Messages: pagedMessages, Skip: int.Parse(skipValue));
         }
