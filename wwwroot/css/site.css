@@ -71,9 +71,10 @@ body {
 }
 
 .user-photo {
-  width: 50px;
+  width: 75px;
 }
 
 .user-photo-small {
   width: 30px;
+  border: 2px solid;
 }

@@ -16,20 +16,20 @@ namespace DotNetCoreRazor_MSGraph.Pages
     [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
     public class EmailModel : PageModel
     {
-        private readonly GraphUtils _graphUtils;
+        private readonly GraphEmailClient _graphEmailClient;
         
         [BindProperty(SupportsGet = true)]
         public int Skip { get; set; }
         public IList<Message> Messages  { get; private set; }
 
-        public EmailModel(GraphUtils graphUtils)
+        public EmailModel(GraphEmailClient graphEmailClient)
         {
-            _graphUtils = graphUtils;
+            _graphEmailClient = graphEmailClient;
         }
 
         public async Task OnGetAsync()
         {
-            var messagesPagingData = await _graphUtils.GetUserMessagesPage(5, Skip); 
+            var messagesPagingData = await _graphEmailClient.GetUserMessagesPage(5, Skip); 
             Messages = messagesPagingData.Messages;
             Skip = messagesPagingData.Skip;
         }

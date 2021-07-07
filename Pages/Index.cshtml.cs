@@ -15,21 +15,20 @@ namespace DotNetCoreRazor_MSGraph.Pages
     [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-        private readonly GraphUtils _graphUtils;
+        private readonly GraphProfileClient _graphProfileClient;
         public string UserDisplayName { get; private set; } = "";
         public string UserPhoto { get; private set; }
 
-        public IndexModel(GraphUtils graphUtils)
+        public IndexModel(GraphProfileClient graphProfileClient)
         {
-            _graphUtils = graphUtils;
+            _graphProfileClient = graphProfileClient;
         }
 
         public async Task OnGetAsync()
         {
-            var displayName = await _graphUtils.GetUserDisplayName(); 
+            var displayName = await _graphProfileClient.GetUserDisplayName(); 
             UserDisplayName = displayName.Split(' ')[0];
-            UserPhoto = await _graphUtils.GetUserProfileImage();
+            UserPhoto = await _graphProfileClient.GetUserProfileImage();
         }
     }
 }

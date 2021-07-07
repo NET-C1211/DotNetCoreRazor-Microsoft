@@ -11,48 +11,15 @@ using System.Net;
 
 namespace DotNetCoreRazor_MSGraph.Graph
 {
-    public class GraphUtils
+    public class GraphEmailClient
     {
-        private readonly ILogger<GraphUtils> _logger;
+        private readonly ILogger<GraphEmailClient> _logger;
         private readonly GraphServiceClient _graphServiceClient;
 
-        public GraphUtils(ILogger<GraphUtils> logger, GraphServiceClient graphServiceClient)
+        public GraphEmailClient(ILogger<GraphEmailClient> logger, GraphServiceClient graphServiceClient)
         {
             _logger = logger;
             _graphServiceClient = graphServiceClient;
-        }
-        public async Task<string> GetUserDisplayName()
-        {
-            User currentUser = null;
-
-            try
-            {
-                currentUser = await _graphServiceClient.Me.Request().GetAsync();
-                return currentUser.DisplayName;
-            }
-            // Catch CAE exception from Graph SDK
-            catch (ServiceException ex) when (ex.Message.Contains("Continuous access evaluation resulted in claims challenge"))
-            {
-                _logger.LogInformation($"/me Continuous access evaluation resulted in claims challenge: {ex.Message}");
-                throw;
-            }
-        }
-        public async Task<string> GetUserProfileImage()
-        {
-            try
-            {
-                // Get user photo
-                using (var photoStream = await _graphServiceClient.Me.Photo.Content.Request().GetAsync())
-                {
-                    byte[] photo = ((MemoryStream)photoStream).ToArray();
-                    return Convert.ToBase64String(photo);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogInformation($"Error calling Graph /me/photo: {ex.Message}");
-                throw;
-            }
         }
 
         public async Task<IList<Message>> GetUserMessages()

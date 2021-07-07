@@ -58,7 +58,9 @@ namespace DotNetCoreRazor_MSGraph
             })
             .AddMicrosoftIdentityUI();  
 
-            services.AddScoped<GraphUtils>();        
+            services.AddScoped<GraphProfileClient>();  
+            services.AddScoped<GraphEmailClient>();  
+            services.AddScoped<GraphCalendarClient>();          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
