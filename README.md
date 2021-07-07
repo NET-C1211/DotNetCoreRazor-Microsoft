@@ -1,7 +1,7 @@
 ## .NET Core Razor Pages with Microsoft Graph
 
-1. Create an AAD app in Azure
-1. Update appsettings.json with your AAD settings
+1. Create an AAD app in Azure and a client secret for it.
+1. Update appsettings.json with your AAD clientID and client secret values.
 1. dotnet restore
 1. dotnet build
 1. dotnet run
