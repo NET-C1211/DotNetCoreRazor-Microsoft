@@ -22,7 +22,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             _graphServiceClient = graphServiceClient;
         }
 
-        public async Task<IList<Message>> GetUserMessages()
+        public async Task<IEnumerable<Message>> GetUserMessages()
         {
             try
             {
@@ -48,7 +48,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
         }
 
-        public async Task<(IList<Message> Messages, int Skip)> GetUserMessagesPage(int pageSize, int skip = 0)
+        public async Task<(IEnumerable<Message> Messages, int Skip)> GetUserMessagesPage(int pageSize, int skip = 0)
         {
             var pagedMessages = await _graphServiceClient.Me.Messages
                     .Request()

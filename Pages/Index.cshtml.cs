@@ -26,8 +26,8 @@ namespace DotNetCoreRazor_MSGraph.Pages
 
         public async Task OnGetAsync()
         {
-            var displayName = await _graphProfileClient.GetUserDisplayName(); 
-            UserDisplayName = displayName.Split(' ')[0];
+            var user = await _graphProfileClient.GetUserProfile(); 
+            UserDisplayName = user.DisplayName.Split(' ')[0];
             UserPhoto = await _graphProfileClient.GetUserProfileImage();
         }
     }

@@ -21,14 +21,22 @@ namespace DotNetCoreRazor_MSGraph.Graph
             _logger = logger;
             _graphServiceClient = graphServiceClient;
         }
-        public async Task<string> GetUserDisplayName()
+        public async Task<User> GetUserProfile()
         {
             User currentUser = null;
 
             try
             {
-                currentUser = await _graphServiceClient.Me.Request().GetAsync();
-                return currentUser.DisplayName;
+                currentUser = await _graphServiceClient
+                    .Me
+                    .Request()
+                    .Select(u => new{
+                        u.DisplayName,
+                        u.MailboxSettings
+                    })
+                    .GetAsync();
+                    
+                return currentUser;
             }
             // Catch CAE exception from Graph SDK
             catch (ServiceException ex) when (ex.Message.Contains("Continuous access evaluation resulted in claims challenge"))

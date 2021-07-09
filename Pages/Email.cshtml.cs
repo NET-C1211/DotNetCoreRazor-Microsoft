@@ -20,7 +20,7 @@ namespace DotNetCoreRazor_MSGraph.Pages
         
         [BindProperty(SupportsGet = true)]
         public int Skip { get; set; }
-        public IList<Message> Messages  { get; private set; }
+        public IEnumerable<Message> Messages  { get; private set; }
 
         public EmailModel(GraphEmailClient graphEmailClient)
         {

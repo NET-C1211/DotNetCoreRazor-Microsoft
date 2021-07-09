@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
 using System.Linq;
 using System.Net;
+using TimeZoneConverter;
 
 namespace DotNetCoreRazor_MSGraph.Graph
 {
@@ -22,50 +23,60 @@ namespace DotNetCoreRazor_MSGraph.Graph
             _graphServiceClient = graphServiceClient;
         }
 
-        public async Task<Calendar> GetUserCalendar()
+        public async Task<IEnumerable<Event>> GetEvents(string userTimeZone)
         {
+            // Configure a calendar view for the current week
+            var startOfWeek = DateTime.Now;
+            var endOfWeek = startOfWeek.AddDays(7);
+
+            var viewOptions = new List<QueryOption>
+            {
+                new QueryOption("startDateTime", startOfWeek.ToString("o")),
+                new QueryOption("endDateTime", endOfWeek.ToString("o"))
+            };
             try
             {
-                var calendar = await _graphServiceClient.Me
-                            .Calendar
-                            .Request()
+                var calendarEvents = await _graphServiceClient.Me
+                            .CalendarView
+                            .Request(viewOptions)
+                            // Send user time zone in request so date/time in
+                            // response will be in preferred time zone
+                            .Header("Prefer", $"outlook.timezone=\"{userTimeZone}\"")
+                            .Select(evt => new
+                            {
+                                evt.Subject,
+                                evt.Organizer,
+                                evt.Start,
+                                evt.End
+                            })
+                            .OrderBy("start/DateTime")
                             .GetAsync();
 
-                return calendar;
+                return calendarEvents;
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Error calling Graph /me/calendar: {ex.Message}");
+                _logger.LogInformation($"Error calling Graph /me/calendaview: {ex.Message}");
                 throw;
             }
         }
 
-        public async Task<(IList<Message> Messages, int Skip)> GetUserMessagesPage(int pageSize, int skip = 0)
+        private static DateTime GetUtcStartOfWeekInTimeZone(DateTime today, string timeZoneId)
         {
-            var pagedMessages = await _graphServiceClient.Me.Messages
-                    .Request()
-                    .Select(msg => new
-                    {
-                        msg.Subject,
-                        msg.Body,
-                        msg.BodyPreview,
-                        msg.ReceivedDateTime
-                    })
-                    .Top(pageSize)
-                    .Skip(skip)
-                    .OrderBy("receivedDateTime")
-                    .GetAsync();
+            // Time zone returned by Graph could be Windows or IANA style
+            // .NET Core's FindSystemTimeZoneById needs IANA on Linux/MacOS,
+            // and needs Windows style on Windows.
+            // TimeZoneConverter can handle this for us
+            TimeZoneInfo userTimeZone = TZConvert.GetTimeZoneInfo(timeZoneId);
 
-            var skipValue = pagedMessages
-                .NextPageRequest?
-                .QueryOptions?
-                .FirstOrDefault(
-                    x => string.Equals("$skip", WebUtility.UrlDecode(x.Name), StringComparison.InvariantCultureIgnoreCase))?
-                .Value ?? "0";
+            // Assumes Sunday as first day of week
+            int diff = System.DayOfWeek.Sunday - today.DayOfWeek;
 
-            _logger.LogInformation($"skipValue: {skipValue}");
+            // create date as unspecified kind
+            var unspecifiedStart = DateTime.SpecifyKind(today.AddDays(diff), DateTimeKind.Unspecified);
 
-            return (Messages: pagedMessages, Skip: int.Parse(skipValue));
+            // convert to UTC
+            return TimeZoneInfo.ConvertTimeToUtc(unspecifiedStart, userTimeZone);
         }
 
     }
