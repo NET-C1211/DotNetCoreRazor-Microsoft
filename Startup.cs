@@ -60,7 +60,8 @@ namespace DotNetCoreRazor_MSGraph
 
             services.AddScoped<GraphProfileClient>();  
             services.AddScoped<GraphEmailClient>();  
-            services.AddScoped<GraphCalendarClient>();          
+            services.AddScoped<GraphCalendarClient>();       
+            services.AddScoped<GraphFilesClient>();  
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
