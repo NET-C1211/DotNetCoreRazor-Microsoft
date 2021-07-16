@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using DotNetCoreRazor_MSGraph.Graph;
@@ -54,13 +55,11 @@ namespace DotNetCoreRazor_MSGraph.Pages
                 await UploadedFile.CopyToAsync(stream);
                 await _graphFilesClient.UploadFile(stream);
             }
+        }
 
-            // string targetFileName = $"{_environment.ContentRootPath}/{UploadedFile.FileName}";
- 
-            // using (var stream = new FileStream(targetFileName, FileMode.Create))
-            // {
-            //     await UploadedFile.CopyToAsync(stream);
-            // }
+        public async Task<FileStreamResult> OnGetDownloadFile(string id, string name) {
+            var stream = await _graphFilesClient.DownloadFile(id);
+            return File(stream, MediaTypeNames.Application.Octet, name);
         }
     }
 }

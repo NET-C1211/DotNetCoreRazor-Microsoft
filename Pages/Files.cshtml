@@ -18,7 +18,9 @@
                     @foreach(var file in Model.Files) {
                         if (file.Folder == null && file.Package == null) {
                             <li>
-                                <a href="#">@file.Name</a>
+                                <a asp-page-handler="DownloadFile" 
+                                   asp-route-name="@file.Name"
+                                   asp-route-id="@file.Id">@file.Name</a>
                             </li>
                         }
                     }

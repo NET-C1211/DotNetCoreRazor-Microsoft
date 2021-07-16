@@ -23,21 +23,54 @@ namespace DotNetCoreRazor_MSGraph.Graph
 
         public async Task<IDriveItemChildrenCollectionPage> GetFiles()
         {
-          return await _graphServiceClient.Me.Drive.Root.Children
-                        .Request()
-                        .Select(file => new {
-                            file.Id,
-                            file.Name,
-                            file.Folder,
-                            file.Package
-                        })
-                        .GetAsync();
+            try 
+            {
+                return await _graphServiceClient.Me.Drive.Root.Children
+                            .Request()
+                            .Select(file => new {
+                                file.Id,
+                                file.Name,
+                                file.Folder,
+                                file.Package
+                            })
+                            .GetAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Error calling Graph /me/drive/root/children: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<Stream> DownloadFile(string fileId) {
+            try 
+            {
+                return await _graphServiceClient
+                            .Me.Drive.Items[fileId].Content
+                            .Request()
+                            .GetAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Error downloading file: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<DriveItem> UploadFile(Stream fileStream) {
-            return await _graphServiceClient.Users["upn or userID"].Drive.Items["{item-id}"].Content
-                            .Request()
-                            .PutAsync<DriveItem>(fileStream);
+            try 
+            {
+                return await _graphServiceClient
+                                .Users["upn or userID"]
+                                .Drive.Items["{item-id}"].Content
+                                .Request()
+                                .PutAsync<DriveItem>(fileStream);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Error uploading file: {ex.Message}");
+                throw;
+            }
         }
 
     }
