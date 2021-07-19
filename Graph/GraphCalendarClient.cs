@@ -25,6 +25,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
 
         public async Task<IEnumerable<Event>> GetEvents(string userTimeZone)
         {
+            _logger.LogInformation($"User timezone: {userTimeZone}");
             // Configure a calendar view for the current week
             var startOfWeek = DateTime.Now;
             var endOfWeek = startOfWeek.AddDays(7);

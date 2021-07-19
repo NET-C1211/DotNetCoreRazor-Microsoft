@@ -12,7 +12,7 @@ using Microsoft.Identity.Web;
 
 namespace DotNetCoreRazor_MSGraph.Pages
 {
-    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
+    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:ProfileScopes")]
     public class IndexModel : PageModel
     {
         private readonly GraphProfileClient _graphProfileClient;

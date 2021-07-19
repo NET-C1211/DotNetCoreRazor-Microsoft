@@ -13,7 +13,7 @@ using Microsoft.Identity.Web;
 
 namespace DotNetCoreRazor_MSGraph.Pages
 {
-    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
+    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:CalendarScopes")]
     public class CalendarModel : PageModel
     {
         private readonly ILogger<CalendarModel> _logger;
@@ -35,7 +35,9 @@ namespace DotNetCoreRazor_MSGraph.Pages
         public async Task OnGetAsync()
         {
             UserProfile = await _graphProfileClient.GetUserProfile();
-            Events = await _graphCalendarClient.GetEvents(UserProfile.MailboxSettings.TimeZone);
+            var userTimeZone = (String.IsNullOrEmpty(UserProfile.MailboxSettings.TimeZone)) 
+                                ? "Pacific Standard Time" : UserProfile.MailboxSettings.TimeZone;
+            Events = await _graphCalendarClient.GetEvents(userTimeZone);
         }
 
         public string FormatDateTimeTimeZone(DateTimeTimeZone value)
