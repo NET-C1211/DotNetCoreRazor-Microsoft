@@ -10,7 +10,7 @@
 
         <div>
             <!-- Add for file download -->
-            @if (Model.Files != null) 
+            @if (Model.Files != null && Model.Files.Count > 0) 
             {   
                 <br />
                 <label>Files in your OneDrive root folder:</label> @Model.Files.Count()
@@ -28,14 +28,16 @@
             }
             else 
             {
-                <strong>No files found</strong>
+                <div>No files found</div>
             }
         </div>
     
         <br /><br />
+        <h3>Upload File</h3>
+        <hr />
         <form method="post" enctype="multipart/form-data">
-            <input asp-for="UploadedFile"></input>
-            <input type="submit"></input>
+            <input asp-for="UploadedFile" type="file"></input>
+            <input type="submit" value="Upload File"></input>
         </form>
 
     }

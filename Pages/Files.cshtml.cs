@@ -18,6 +18,8 @@ using Microsoft.Identity.Web;
 namespace DotNetCoreRazor_MSGraph.Pages
 {
     [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
+    [RequestFormLimits(MultipartBodyLengthLimit = 100000000)]
+    [RequestSizeLimit(100000000)]
     public class FilesModel : PageModel
     {
         private readonly ILogger<FilesModel> _logger;
@@ -53,8 +55,9 @@ namespace DotNetCoreRazor_MSGraph.Pages
 
             using (var stream = new MemoryStream()) {
                 await UploadedFile.CopyToAsync(stream);
-                await _graphFilesClient.UploadFile(stream);
+                await _graphFilesClient.UploadFile(UploadedFile.FileName, stream);
             }
+            await OnGetAsync();
         }
 
         public async Task<FileStreamResult> OnGetDownloadFile(string id, string name) {

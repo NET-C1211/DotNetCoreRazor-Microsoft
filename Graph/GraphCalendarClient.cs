@@ -39,8 +39,6 @@ namespace DotNetCoreRazor_MSGraph.Graph
                 var calendarEvents = await _graphServiceClient.Me
                             .CalendarView
                             .Request(viewOptions)
-                            // Send user time zone in request so date/time in
-                            // response will be in preferred time zone
                             .Header("Prefer", $"outlook.timezone=\"{userTimeZone}\"")
                             .Select(evt => new
                             {

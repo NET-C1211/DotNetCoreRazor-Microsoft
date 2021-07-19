@@ -23,11 +23,12 @@ namespace DotNetCoreRazor_MSGraph.Graph
 
         public async Task<IDriveItemChildrenCollectionPage> GetFiles()
         {
-            try 
+            try
             {
                 return await _graphServiceClient.Me.Drive.Root.Children
                             .Request()
-                            .Select(file => new {
+                            .Select(file => new
+                            {
                                 file.Id,
                                 file.Name,
                                 file.Folder,
@@ -42,8 +43,9 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
         }
 
-        public async Task<Stream> DownloadFile(string fileId) {
-            try 
+        public async Task<Stream> DownloadFile(string fileId)
+        {
+            try
             {
                 return await _graphServiceClient
                             .Me.Drive.Items[fileId].Content
@@ -57,21 +59,88 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
         }
 
-        public async Task<DriveItem> UploadFile(Stream fileStream) {
-            try 
+        public async Task UploadFile(string fileName, Stream stream)
+        {
+            var itemPath = Uri.EscapeUriString(fileName);
+            var size = stream.Length / 1000;
+            _logger.LogInformation($"Stream size: {size} KB");
+            if (size/1000 > 5)
             {
-                return await _graphServiceClient
-                                .Users["upn or userID"]
-                                .Drive.Items["{item-id}"].Content
-                                .Request()
-                                .PutAsync<DriveItem>(fileStream);
+                // Allows slices of a large file to be uploaded 
+                // Optional but support progress and resume capabilities if needed
+                await UploadLargeFile(itemPath, stream);
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogInformation($"Error uploading file: {ex.Message}");
-                throw;
+                try
+                {
+                    // Uploads entire file all at once. No support for reporting progress.
+                    var driveItem = await _graphServiceClient.Me.Drive.Root.ItemWithPath(itemPath)
+                        .Content
+                        .Request()
+                        .PutAsync<DriveItem>(stream);
+                    _logger.LogInformation($"Upload complete: {driveItem.Name}");
+                }
+                catch (ServiceException ex)
+                {
+                    _logger.LogInformation($"Error uploading: {ex.ToString()}");
+                }
             }
         }
 
+        private async Task UploadLargeFile(string itemPath, Stream stream)
+        {
+            // Allows "slices" of a file to be uploaded.
+            // This technique provides a way to capture the progress of the upload
+            // and makes it possible to resume an upload using fileUploadTask.ResumeAsync(progress);
+            // Based on https://docs.microsoft.com/en-us/graph/sdks/large-file-upload
+
+            // Use uploadable properties to specify the conflict behavior (replace in this case).
+            var uploadProps = new DriveItemUploadableProperties
+            {
+                ODataType = null,
+                AdditionalData = new Dictionary<string, object>
+                {
+                    { "@microsoft.graph.conflictBehavior", "replace" }
+                }
+            };
+
+            // Create the upload session
+            var uploadSession = await _graphServiceClient.Me.Drive.Root
+                .ItemWithPath(itemPath)
+                .CreateUploadSession(uploadProps)
+                .Request()
+                .PostAsync();
+
+            // Max slice size must be a multiple of 320 KiB
+            int maxSliceSize = 320 * 1024;
+            var fileUploadTask =
+                new LargeFileUploadTask<DriveItem>(uploadSession, stream, maxSliceSize);
+
+            // Create a callback that is invoked after each slice is uploaded
+            IProgress<long> progress = new Progress<long>(prog =>
+            {
+                _logger.LogInformation($"Uploaded {prog} bytes of {stream.Length} bytes");
+            });
+
+            try
+            {
+                // Upload the file
+                var uploadResult = await fileUploadTask.UploadAsync(progress);
+
+                if (uploadResult.UploadSucceeded)
+                {
+                    _logger.LogInformation($"Upload complete, item ID: {uploadResult.ItemResponse.Id}");
+                }
+                else
+                {
+                    _logger.LogInformation("Upload failed");
+                }
+            }
+            catch (ServiceException ex)
+            {
+                _logger.LogInformation($"Error uploading: {ex.ToString()}");
+            }
+        }
     }
 }
