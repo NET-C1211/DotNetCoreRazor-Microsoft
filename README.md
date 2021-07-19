@@ -7,3 +7,7 @@
 1. dotnet run
 
 Once the app is running, navigate to https://localhost:5001 and then login.
+
+NOTE: If you get an SSL certificate error, you can generate one using the following command:
+
+```dotnet dev-certs https -t```
