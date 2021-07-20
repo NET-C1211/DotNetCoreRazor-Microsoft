@@ -44,6 +44,10 @@ namespace DotNetCoreRazor_MSGraph.Graph
                 _logger.LogInformation($"/me Continuous access evaluation resulted in claims challenge: {ex.Message}");
                 throw;
             }
+            catch (Exception ex) {
+                _logger.LogInformation($"/me Error: {ex.Message}");
+                throw;
+            }
         }
         public async Task<string> GetUserProfileImage()
         {
@@ -72,7 +76,12 @@ namespace DotNetCoreRazor_MSGraph.Graph
             // Catch CAE exception from Graph SDK
             catch (ServiceException ex) when (ex.Message.Contains("Continuous access evaluation resulted in claims challenge"))
             {
-                _logger.LogInformation($"/me Continuous access evaluation resulted in claims challenge: {ex.Message}");
+                _logger.LogInformation($"/me/presence Continuous access evaluation resulted in claims challenge: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Error calling Graph /me/presence: {ex.Message}");
                 throw;
             }
         }

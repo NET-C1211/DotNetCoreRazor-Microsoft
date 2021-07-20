@@ -13,7 +13,7 @@ using Microsoft.Identity.Web;
 
 namespace DotNetCoreRazor_MSGraph.Pages
 {
-    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:EmailScopes")]
+    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
     public class EmailModel : PageModel
     {
         private readonly GraphEmailClient _graphEmailClient;

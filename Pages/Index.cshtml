@@ -14,14 +14,10 @@
             {
                 <img src="data:image/jpeg;base64, @Model.UserPhoto" class="user-photo nav-profile-photo rounded-circle align-self-center mr-2" />
             }
-            else
-            {
-                <p>No Pic available for this user. Upload a pic for this user in the Azure portal.</p>
-            }
             Welcome @Model.UserDisplayName!</h4>
     }
     else
     {
-        <a class="btn btn-primary btn-large" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Click here to sign in</a>
+        <a class="btn btn-primary btn-large" href="https://localhost:5001/signin-oidc">Click here to sign in</a>
     }
 </div>

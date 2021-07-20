@@ -13,7 +13,7 @@ using Microsoft.Identity.Web;
 
 namespace DotNetCoreRazor_MSGraph.Pages
 {
-    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:CalendarScopes")]
+    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
     public class CalendarModel : PageModel
     {
         private readonly ILogger<CalendarModel> _logger;

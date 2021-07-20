@@ -17,7 +17,7 @@ using Microsoft.Identity.Web;
 
 namespace DotNetCoreRazor_MSGraph.Pages
 {
-    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:FileScopes")]
+    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
     // Max supported upload size is 100MB
     [RequestFormLimits(MultipartBodyLengthLimit = 100000000)]
     [RequestSizeLimit(100000000)]
