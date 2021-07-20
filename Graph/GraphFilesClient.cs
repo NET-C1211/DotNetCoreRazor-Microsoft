@@ -67,7 +67,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             if (size/1000 > 5)
             {
                 // Allows slices of a large file to be uploaded 
-                // Optional but support progress and resume capabilities if needed
+                // Optional but supports progress and resume capabilities if needed
                 await UploadLargeFile(itemPath, stream);
             }
             else
