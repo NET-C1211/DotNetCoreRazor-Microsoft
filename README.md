@@ -4,6 +4,10 @@
 
     https://developer.microsoft.com/en-us/microsoft-365/dev-program
 
+    You can view a video about the process here:
+
+    https://www.youtube.com/watch?v=DhhpJ1UjbJ0
+
 1. Register a new app in Azure Active Directory:
 
     - Login to the Azure Portal
