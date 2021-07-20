@@ -24,7 +24,6 @@ namespace DotNetCoreRazor_MSGraph.Pages
     public class FilesModel : PageModel
     {
         private readonly ILogger<FilesModel> _logger;
-        private readonly IHostEnvironment _environment;
         private readonly GraphFilesClient _graphFilesClient;
         
         [BindProperty(SupportsGet = true)]
@@ -34,7 +33,7 @@ namespace DotNetCoreRazor_MSGraph.Pages
         public IFormFile UploadedFile { get; set; }
         public IDriveItemChildrenCollectionPage Files  { get; private set; }
 
-        public FilesModel(ILogger<FilesModel> logger, GraphFilesClient graphFilesClient, IHostEnvironment environment)
+        public FilesModel(ILogger<FilesModel> logger, GraphFilesClient graphFilesClient)
         {
             _graphFilesClient = graphFilesClient;
             _logger = logger;
