@@ -11,7 +11,7 @@
     - Select `App registrations` in the `Manage` section
     - Select `New registration` in the toolbar
     - Give the app a name
-    - Iin the Redirect URI section select `Web` and enter the following URL:
+    - In the Redirect URI section select `Web` and enter the following URL:
 
         https://localhost:5001/signin-oidc
 
