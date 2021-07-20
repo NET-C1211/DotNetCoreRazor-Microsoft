@@ -25,8 +25,8 @@
 1. Run `dotnet build`
 1. Run `dotnet run`
 
-Once the app is running, navigate to https://localhost:5001 and login using one of your Microsoft 365 tenant users.
+1. Once the app is running, navigate to https://localhost:5001 and login using one of your Microsoft 365 tenant users.
 
-NOTE: If you get an SSL certificate error, you can generate one using the following command:
+NOTE: If you get an SSL certificate error, you can generate a dev certificate for your machine using the following command:
 
 ```dotnet dev-certs https -t```
