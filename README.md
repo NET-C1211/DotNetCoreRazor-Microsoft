@@ -1,5 +1,9 @@
 ## .NET Core Razor Pages with Microsoft Graph
 
+1. Ensure you have .NET 5+ installed on your machine. You can download and install it from the following link:
+
+    https://dot.net
+
 1. Create a Microsoft 365 developer tenant if you don't already have one:
 
     https://developer.microsoft.com/en-us/microsoft-365/dev-program
