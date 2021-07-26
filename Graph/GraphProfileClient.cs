@@ -63,7 +63,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             catch (Exception ex)
             {
                 _logger.LogInformation($"Error calling Graph /me/photo: {ex.Message}");
-                throw;
+                return null;
             }
         }
 

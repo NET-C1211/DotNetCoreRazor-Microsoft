@@ -3,6 +3,7 @@
 @{
     var presenceCssClass = await GraphProfileClient.GetPresenceCssClass();
     var userProfile = await GraphProfileClient.GetUserProfile();
+    var userProfileImage = await GraphProfileClient.GetUserProfileImage();
 }
 
 <ul class="nav navbar-nav">
@@ -10,9 +11,16 @@
 {
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
-           <img src="data:image/jpeg;base64, @await GraphProfileClient.GetUserProfileImage()" 
-            class="user-photo-small @presenceCssClass nav-profile-photo rounded-circle align-self-center mr-2" />
-            <!-- User Presence Availability: @presenceCssClass -->
+            @if (userProfileImage != null)
+            {
+                <img src="data:image/jpeg;base64, @userProfileImage" 
+                    class="user-photo-small @presenceCssClass nav-profile-photo rounded-circle align-self-center mr-2" />
+                    <!-- User Presence Availability: @presenceCssClass -->
+            }
+            else 
+            {
+                @userProfile.DisplayName
+            }
         </a>
         <div class="dropdown-menu dropdown-menu-right">
             <h5 class="dropdown-item-text mb-0">@userProfile.DisplayName</h5>
