@@ -35,7 +35,6 @@
     - Click `Certificates & secrets` and create a new client secret. Ensure that you copy and store the secret somewhere since this is the only time you'll be able to access it. You'll need it in the next step.
 
 1. Perform the following steps in `appsettings.json`:
-    - Update the `Domain` property value with your Microsoft 365 tenant name.
     - Update the `ClientId` property value with the `clientID` that was created when you did the app registration steps above.
     - Update the `ClientSecret` property value with the secret that you created earlier during the app registration steps above.
 1. Run `dotnet restore`
