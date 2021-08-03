@@ -64,6 +64,9 @@ namespace DotNetCoreRazor_MSGraph.Graph
                     .OrderBy("receivedDateTime")
                     .GetAsync();
 
+            // var httpRequest = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/messages?%24select=subject%2cbody%2cbodyPreview%2creceivedDateTime&%24orderby=receivedDateTime&%24top=5&%24skip=5");
+            // var response = await _graphServiceClient.HttpProvider.SendAsync(httpRequest);
+
             var skipValue = pagedMessages
                 .NextPageRequest?
                 .QueryOptions?
