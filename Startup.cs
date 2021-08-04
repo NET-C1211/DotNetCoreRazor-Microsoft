@@ -90,10 +90,7 @@ namespace DotNetCoreRazor_MSGraph
                         return Task.FromResult(0);
                     };
                 })
-                .EnableTokenAcquisitionToCallDownstreamApi(options =>
-                {
-                    Configuration.Bind("AzureAd", options);
-                }, initialScopes)
+                .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
                 .AddMicrosoftGraph(Configuration.GetSection("DownstreamApi"))
                 .AddInMemoryTokenCaches();
 
@@ -112,7 +109,7 @@ namespace DotNetCoreRazor_MSGraph
 
             services.AddRazorPages(options =>
             {
-                options.Conventions.AuthorizePage("/Index");
+                //options.Conventions.AuthorizePage("/Pages");
             })
             .AddMicrosoftIdentityUI();
 

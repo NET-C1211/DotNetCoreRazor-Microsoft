@@ -30,7 +30,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
                 currentUser = await _graphServiceClient
                     .Me
                     .Request()
-                    .Select(u => new{
+                    .Select(u => new {
                         u.DisplayName,
                         u.MailboxSettings
                     })
