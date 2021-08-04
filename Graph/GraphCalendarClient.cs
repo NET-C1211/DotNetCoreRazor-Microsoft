@@ -23,6 +23,26 @@ namespace DotNetCoreRazor_MSGraph.Graph
             _graphServiceClient = graphServiceClient;
         }
 
+        // Used for timezone settings related to calendar
+        public async Task<MailboxSettings> GetUserMailboxSettings()
+        {
+            try
+            {
+                var currentUser = await _graphServiceClient.Me
+                    .Request()
+                    .Select(u => new {
+                        u.MailboxSettings
+                    })
+                    .GetAsync();
+                    
+                return currentUser.MailboxSettings;
+            }
+            catch (Exception ex) {
+                _logger.LogInformation($"/me Error: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<Event>> GetEvents(string userTimeZone)
         {
             _logger.LogInformation($"User timezone: {userTimeZone}");

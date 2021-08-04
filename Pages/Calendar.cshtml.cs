@@ -19,10 +19,8 @@ namespace DotNetCoreRazor_MSGraph.Pages
         private readonly ILogger<CalendarModel> _logger;
         private readonly GraphCalendarClient _graphCalendarClient;
         private readonly GraphProfileClient _graphProfileClient;
-        private User UserProfile { get; set; }
-        
-        [BindProperty(SupportsGet = true)]
-        public int Skip { get; set; }
+        private MailboxSettings MailboxSettings { get; set; }
+
         public IEnumerable<Event> Events  { get; private set; }
 
         public CalendarModel(ILogger<CalendarModel> logger, GraphCalendarClient graphCalendarClient, GraphProfileClient graphProfileClient)
@@ -34,9 +32,9 @@ namespace DotNetCoreRazor_MSGraph.Pages
 
         public async Task OnGetAsync()
         {
-            UserProfile = await _graphProfileClient.GetUserProfile();
-            var userTimeZone = (String.IsNullOrEmpty(UserProfile.MailboxSettings.TimeZone)) 
-                                ? "Pacific Standard Time" : UserProfile.MailboxSettings.TimeZone;
+            MailboxSettings = await _graphCalendarClient.GetUserMailboxSettings();
+            var userTimeZone = (String.IsNullOrEmpty(MailboxSettings.TimeZone)) 
+                                ? "Pacific Standard Time" : MailboxSettings.TimeZone;
             Events = await _graphCalendarClient.GetEvents(userTimeZone);
         }
 
@@ -46,7 +44,7 @@ namespace DotNetCoreRazor_MSGraph.Pages
             var graphDatetime = value.DateTime;
             if (DateTime.TryParse(graphDatetime, out DateTime dateTime)) 
             {
-                var dateTimeFormat = $"{UserProfile.MailboxSettings.DateFormat} {UserProfile.MailboxSettings.TimeFormat}".Trim();
+                var dateTimeFormat = $"{MailboxSettings.DateFormat} {MailboxSettings.TimeFormat}".Trim();
                 if (!String.IsNullOrEmpty(dateTimeFormat)) {
                     return dateTime.ToString(dateTimeFormat);
                 }

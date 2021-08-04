@@ -31,8 +31,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
                     .Me
                     .Request()
                     .Select(u => new {
-                        u.DisplayName,
-                        u.MailboxSettings
+                        u.DisplayName
                     })
                     .GetAsync();
                     

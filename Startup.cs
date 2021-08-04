@@ -107,10 +107,7 @@ namespace DotNetCoreRazor_MSGraph
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            services.AddRazorPages(options =>
-            {
-                //options.Conventions.AuthorizePage("/Pages");
-            })
+            services.AddRazorPages()
             .AddMicrosoftIdentityUI();
 
             services.AddScoped<GraphProfileClient>();
