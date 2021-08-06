@@ -16,11 +16,6 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Azure;
 using DotNetCoreRazor_MSGraph.Graph;
-using Microsoft.Graph;
-using System.Net.Http.Headers;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using System.Net;
-using Microsoft.Extensions.Logging;
 
 namespace DotNetCoreRazor_MSGraph
 {
@@ -36,69 +31,26 @@ namespace DotNetCoreRazor_MSGraph
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            // Retrieve required permissions from appsettings
             string[] initialScopes = Configuration.GetValue<string>("DownstreamApi:Scopes")?.Split(' ');
 
-            services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApp(options =>
-                {
-                    Configuration.Bind("AzureAd", options);
-                    options.Prompt = "select_account";
-                    
-                    // Could use graphClient here to prefetch and cache profile, etc. if wanted
-                    // options.Events.OnTokenValidated = async context =>
-                    // {
-                    //     var tokenAcquisition = context.HttpContext.RequestServices
-                    //         .GetRequiredService<ITokenAcquisition>();
-                    //     var logger = context.HttpContext.RequestServices
-                    //         .GetRequiredService<ILogger<Startup>>();
-                    //     var token = await tokenAcquisition
-                    //         .GetAccessTokenForUserAsync(initialScopes, user: context.Principal);
+            services
+                // Add support for OpenId authentication
+                .AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 
-                    //     var graphClient = new GraphServiceClient(
-                    //         new DelegateAuthenticationProvider(async (request) =>
-                    //         {
-                    //             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    //         })
-                    //     );
+                // Microsoft identity platform web app that requires an auth code flow
+                .AddMicrosoftIdentityWebApp(Configuration)
 
-                    //     // Example of using graphClient
-                    //     var profile = await graphClient.Me.Request().GetAsync();
-                    //     logger.LogInformation(profile.GivenName);
-                    // };
-
-                    options.Events.OnAuthenticationFailed = context =>
-                    {
-                        var error = WebUtility.UrlEncode(context.Exception.Message);
-                        context.Response
-                            .Redirect($"/Home/ErrorWithMessage?message=Authentication+error&debug={error}");
-                        context.HandleResponse();
-
-                        return Task.FromResult(0);
-                    };
-
-                    options.Events.OnRemoteFailure = context =>
-                    {
-                        if (context.Failure is OpenIdConnectProtocolException)
-                        {
-                            var error = WebUtility.UrlEncode(context.Failure.Message);
-                            context.Response
-                                .Redirect($"/Home/ErrorWithMessage?message=Sign+in+error&debug={error}");
-                            context.HandleResponse();
-                        }
-
-                        return Task.FromResult(0);
-                    };
-                })
+                // Add ability to call Microsoft Graph APIs with specific permissions
                 .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
+
+                // Enable dependency injection for GraphServiceClient
                 .AddMicrosoftGraph(Configuration.GetSection("DownstreamApi"))
+
+                // Add in-memory token cache
                 .AddInMemoryTokenCaches();
 
-            // uncomment the following 3 lines to get ClientSecret from KeyVault
-            // string tenantId = Configuration.GetValue<string>("AzureAd:TenantId");
-            // services.Configure<MicrosoftIdentityOptions>(
-            //    options => { options.ClientSecret = GetSecretFromKeyVault(tenantId, "ENTER_YOUR_SECRET_NAME_HERE"); });
-
+            // Require an authenticated user
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -107,8 +59,71 @@ namespace DotNetCoreRazor_MSGraph
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            services.AddRazorPages()
-            .AddMicrosoftIdentityUI();
+            services
+                // Add Razor Pages support
+                .AddRazorPages()
+
+                // Add Microsoft Identity UI pages that provide user 
+                .AddMicrosoftIdentityUI();
+
+            // .AddMicrosoftIdentityWebApp(options =>
+            // {
+            //     Configuration.Bind("AzureAd", options);
+            //     options.Prompt = "select_account";
+
+            //     // Could use graphClient here to prefetch and cache profile, etc. if wanted
+            //     // options.Events.OnTokenValidated = async context =>
+            //     // {
+            //     //     var tokenAcquisition = context.HttpContext.RequestServices
+            //     //         .GetRequiredService<ITokenAcquisition>();
+            //     //     var logger = context.HttpContext.RequestServices
+            //     //         .GetRequiredService<ILogger<Startup>>();
+            //     //     var token = await tokenAcquisition
+            //     //         .GetAccessTokenForUserAsync(initialScopes, user: context.Principal);
+
+            //     //     var graphClient = new GraphServiceClient(
+            //     //         new DelegateAuthenticationProvider(async (request) =>
+            //     //         {
+            //     //             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            //     //         })
+            //     //     );
+
+            //     //     // Example of using graphClient
+            //     //     var profile = await graphClient.Me.Request().GetAsync();
+            //     //     logger.LogInformation(profile.GivenName);
+            //     // };
+
+            //     options.Events.OnAuthenticationFailed = context =>
+            //     {
+            //         var error = WebUtility.UrlEncode(context.Exception.Message);
+            //         context.Response
+            //             .Redirect($"/Home/ErrorWithMessage?message=Authentication+error&debug={error}");
+            //         context.HandleResponse();
+
+            //         return Task.FromResult(0);
+            //     };
+
+            //     options.Events.OnRemoteFailure = context =>
+            //     {
+            //         if (context.Failure is OpenIdConnectProtocolException)
+            //         {
+            //             var error = WebUtility.UrlEncode(context.Failure.Message);
+            //             context.Response
+            //                 .Redirect($"/Home/ErrorWithMessage?message=Sign+in+error&debug={error}");
+            //             context.HandleResponse();
+            //         }
+
+            //         return Task.FromResult(0);
+            //     };
+            // })
+            // .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
+            // .AddMicrosoftGraph(Configuration.GetSection("DownstreamApi"))
+            // .AddInMemoryTokenCaches();
+
+            // uncomment the following 3 lines to get ClientSecret from KeyVault
+            // string tenantId = Configuration.GetValue<string>("AzureAd:TenantId");
+            // services.Configure<MicrosoftIdentityOptions>(
+            //    options => { options.ClientSecret = GetSecretFromKeyVault(tenantId, "ENTER_YOUR_SECRET_NAME_HERE"); });
 
             services.AddScoped<GraphProfileClient>();
             services.AddScoped<GraphEmailClient>();

@@ -28,16 +28,19 @@ namespace DotNetCoreRazor_MSGraph.Graph
         {
             try
             {
-                var currentUser = await _graphServiceClient.Me
+                var currentUser = await _graphServiceClient
+                    .Me
                     .Request()
-                    .Select(u => new {
+                    .Select(u => new
+                    {
                         u.MailboxSettings
                     })
                     .GetAsync();
-                    
+
                 return currentUser.MailboxSettings;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logger.LogInformation($"/me Error: {ex.Message}");
                 throw;
             }
@@ -55,21 +58,24 @@ namespace DotNetCoreRazor_MSGraph.Graph
                 new QueryOption("startDateTime", startOfWeek.ToString("o")),
                 new QueryOption("endDateTime", endOfWeek.ToString("o"))
             };
+
             try
             {
-                var calendarEvents = await _graphServiceClient.Me
-                            .CalendarView
-                            .Request(viewOptions)
-                            .Header("Prefer", $"outlook.timezone=\"{userTimeZone}\"")
-                            .Select(evt => new
-                            {
-                                evt.Subject,
-                                evt.Organizer,
-                                evt.Start,
-                                evt.End
-                            })
-                            .OrderBy("start/DateTime")
-                            .GetAsync();
+                // Use the injected GraphServiceClient object to call Me.CalendarView
+                var calendarEvents = await _graphServiceClient
+                    .Me
+                    .CalendarView
+                    .Request(viewOptions)
+                    .Header("Prefer", $"outlook.timezone=\"{userTimeZone}\"")
+                    .Select(evt => new
+                    {
+                        evt.Subject,
+                        evt.Organizer,
+                        evt.Start,
+                        evt.End
+                    })
+                    .OrderBy("start/DateTime")
+                    .GetAsync();
 
                 return calendarEvents;
             }
