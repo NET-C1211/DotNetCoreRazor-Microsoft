@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 
 namespace DotNetCoreRazor_MSGraph.Graph
 {
@@ -64,8 +65,13 @@ namespace DotNetCoreRazor_MSGraph.Graph
                     .OrderBy("receivedDateTime")
                     .GetAsync();
 
-            // var httpRequest = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/messages?%24select=subject%2cbody%2cbodyPreview%2creceivedDateTime&%24orderby=receivedDateTime&%24top=5&%24skip=5");
-            // var response = await _graphServiceClient.HttpProvider.SendAsync(httpRequest);
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/messages?%24select=subject%2cbody%2cbodyPreview%2creceivedDateTime&%24orderby=receivedDateTime&%24top=5&%24skip=5");
+            var response = await _graphServiceClient.HttpProvider.SendAsync(httpRequest);
+            Console.WriteLine(response.StatusCode);
+            var stream = await response.Content.ReadAsStreamAsync();
+            var messages =  _graphServiceClient.HttpProvider.Serializer.DeserializeObject<IUserMessagesCollectionPage>(stream);
+            Console.WriteLine(messages.Count);
+
 
             var skipValue = pagedMessages
                 .NextPageRequest?
