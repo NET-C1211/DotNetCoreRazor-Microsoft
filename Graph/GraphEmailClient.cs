@@ -71,7 +71,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
                         .OrderBy("receivedDateTime")
                         .GetAsync();
                 nextLink = pagedMessages.AdditionalData["@odata.nextLink"].ToString();
-                _logger.LogInformation(nextLink);
+                _logger.LogInformation(nextLink); 
             }
             else 
             {
