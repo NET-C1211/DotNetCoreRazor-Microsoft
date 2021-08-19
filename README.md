@@ -34,9 +34,14 @@
     - Save your changes.
     - Click `Certificates & secrets` and create a new client secret. Ensure that you copy and store the secret somewhere since this is the only time you'll be able to access it. You'll need it in the next step.
 
-1. Perform the following steps in `appsettings.json`:
-    - Update the `ClientId` property value with the `clientID` that was created when you did the app registration steps above.
-    - Update the `ClientSecret` property value with the secret that you created earlier during the app registration steps above.
+1. Open a terminal window at the root of the `DotnetCoreRazor-MicrosoftGraph` folder and run the following commands, substituting `YOUR_APP_ID` with your `Application (client) ID` from the Azure portal, and `YOUR_APP_SECRET` with the application secret you created. 
+
+```
+dotnet user-secrets init 
+dotnet user-secrets set "AzureAd:ClientId" "YOUR_APP_ID" 
+dotnet user-secrets set "AzureAd:ClientSecret" "YOUR_APP_SECRET"
+```
+
 1. Run `dotnet restore`
 1. Run `dotnet build`
 1. Run `dotnet run`

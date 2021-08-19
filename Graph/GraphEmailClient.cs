@@ -49,40 +49,56 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
         }
 
-        public async Task<(IEnumerable<Message> Messages, int Skip)> GetUserMessagesPage(int pageSize, int skip = 0)
+        public async Task<(IEnumerable<Message> Messages, string NextLink)> GetUserMessagesPage(string nextPageLink = null)
         {
-            var pagedMessages = await _graphServiceClient.Me.Messages
-                    .Request()
-                    .Select(msg => new
-                    {
-                        msg.Subject,
-                        msg.Body,
-                        msg.BodyPreview,
-                        msg.ReceivedDateTime
-                    })
-                    .Top(pageSize)
-                    .Skip(skip)
-                    .OrderBy("receivedDateTime")
-                    .GetAsync();
+            int top = 5;
+            IUserMessagesCollectionPage pagedMessages;
+            string nextLink;
+            
+            if (nextPageLink == null) 
+            {
+                // Get initial page of messages
+                pagedMessages = await _graphServiceClient.Me.Messages
+                        .Request()
+                        .Select(msg => new
+                        {
+                            msg.Subject,
+                            msg.Body,
+                            msg.BodyPreview,
+                            msg.ReceivedDateTime
+                        })
+                        .Top(top)
+                        .OrderBy("receivedDateTime")
+                        .GetAsync();
+                nextLink = pagedMessages.AdditionalData["@odata.nextLink"].ToString();
+                _logger.LogInformation(nextLink);
+            }
+            else 
+            {
+                // Use nextLink value to get the page of messages
+                _logger.LogInformation(nextPageLink);
+                var httpRequest = new HttpRequestMessage(HttpMethod.Get, nextPageLink);
+                var response = await _graphServiceClient.HttpProvider.SendAsync(httpRequest);
+                Console.WriteLine(response.StatusCode);
+                var stream = await response.Content.ReadAsStreamAsync();
+                pagedMessages =  _graphServiceClient.HttpProvider.Serializer.DeserializeObject<IUserMessagesCollectionPage>(stream);
+                nextLink = pagedMessages.AdditionalData["@odata.nextLink"].ToString();
+                Console.WriteLine(pagedMessages.Count);
+            }
 
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/messages?%24select=subject%2cbody%2cbodyPreview%2creceivedDateTime&%24orderby=receivedDateTime&%24top=5&%24skip=5");
-            var response = await _graphServiceClient.HttpProvider.SendAsync(httpRequest);
-            Console.WriteLine(response.StatusCode);
-            var stream = await response.Content.ReadAsStreamAsync();
-            var messages =  _graphServiceClient.HttpProvider.Serializer.DeserializeObject<IUserMessagesCollectionPage>(stream);
-            Console.WriteLine(messages.Count);
+            return (Messages: pagedMessages, NextLink: nextLink);
 
 
-            var skipValue = pagedMessages
-                .NextPageRequest?
-                .QueryOptions?
-                .FirstOrDefault(
-                    x => string.Equals("$skip", WebUtility.UrlDecode(x.Name), StringComparison.InvariantCultureIgnoreCase))?
-                .Value ?? "0";
+            // var skipValue = pagedMessages
+            //     .NextPageRequest?
+            //     .QueryOptions?
+            //     .FirstOrDefault(
+            //         x => string.Equals("$skip", WebUtility.UrlDecode(x.Name), StringComparison.InvariantCultureIgnoreCase))?
+            //     .Value ?? "0";
 
-            _logger.LogInformation($"skipValue: {skipValue}");
+            // _logger.LogInformation($"skipValue: {skipValue}");
 
-            return (Messages: pagedMessages, Skip: int.Parse(skipValue));
+            //return (Messages: pagedMessages, Skip: int.Parse(skipValue));
         }
 
     }

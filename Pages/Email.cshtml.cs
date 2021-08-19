@@ -19,7 +19,7 @@ namespace DotNetCoreRazor_MSGraph.Pages
         private readonly GraphEmailClient _graphEmailClient;
         
         [BindProperty(SupportsGet = true)]
-        public int Skip { get; set; }
+        public string NextLink { get; set; }
         public IEnumerable<Message> Messages  { get; private set; }
 
         public EmailModel(GraphEmailClient graphEmailClient)
@@ -29,9 +29,9 @@ namespace DotNetCoreRazor_MSGraph.Pages
 
         public async Task OnGetAsync()
         {
-            var messagesPagingData = await _graphEmailClient.GetUserMessagesPage(5, Skip); 
+            var messagesPagingData = await _graphEmailClient.GetUserMessagesPage(NextLink); 
             Messages = messagesPagingData.Messages;
-            Skip = messagesPagingData.Skip;
+            NextLink = messagesPagingData.NextLink;
         }
     }
 }
