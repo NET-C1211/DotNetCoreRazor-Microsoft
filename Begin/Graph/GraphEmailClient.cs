@@ -49,7 +49,8 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
         }
 
-        public async Task<(IEnumerable<Message> Messages, string NextLink)> GetUserMessagesPage(string nextPageLink = null)
+        public async Task<(IEnumerable<Message> Messages, string NextLink)> GetUserMessagesPage(
+            string nextPageLink = null)
         {
             int top = 5;
             IUserMessagesCollectionPage pagedMessages;
@@ -90,24 +91,3 @@ namespace DotNetCoreRazor_MSGraph.Graph
 
     }
 }
-
-// Couldn't get this working to make a "raw" API call due to token not being pass error
-// _logger.LogInformation(nextPageLink);
-// var httpRequest = new HttpRequestMessage(HttpMethod.Get, nextPageLink);
-// var response = await _graphServiceClient.HttpProvider.SendAsync(httpRequest);
-// Console.WriteLine(response.StatusCode);
-// var stream = await response.Content.ReadAsStreamAsync();
-// pagedMessages =  _graphServiceClient.HttpProvider.Serializer.DeserializeObject<IUserMessagesCollectionPage>(stream);
-// nextLink = pagedMessages.AdditionalData["@odata.nextLink"].ToString();
-// Console.WriteLine(pagedMessages.Count);
-
-// var skipValue = pagedMessages
-//     .NextPageRequest?
-//     .QueryOptions?
-//     .FirstOrDefault(
-//         x => string.Equals("$skip", WebUtility.UrlDecode(x.Name), StringComparison.InvariantCultureIgnoreCase))?
-//     .Value ?? "0";
-
-// _logger.LogInformation($"skipValue: {skipValue}");
-
-//return (Messages: pagedMessages, Skip: int.Parse(skipValue));

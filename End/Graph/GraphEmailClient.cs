@@ -49,7 +49,8 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
         }
 
-        public async Task<(IEnumerable<Message> Messages, string NextLink)> GetUserMessagesPage(string nextPageLink = null)
+        public async Task<(IEnumerable<Message> Messages, string NextLink)> GetUserMessagesPage(
+            string nextPageLink = null)
         {
             int top = 5;
             IUserMessagesCollectionPage pagedMessages;

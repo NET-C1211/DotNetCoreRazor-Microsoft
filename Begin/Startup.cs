@@ -66,68 +66,10 @@ namespace DotNetCoreRazor_MSGraph
                 // Add Microsoft Identity UI pages that provide user 
                 .AddMicrosoftIdentityUI();
 
-            // .AddMicrosoftIdentityWebApp(options =>
-            // {
-            //     Configuration.Bind("AzureAd", options);
-            //     options.Prompt = "select_account";
-
-            //     // Could use graphClient here to prefetch and cache profile, etc. if wanted
-            //     // options.Events.OnTokenValidated = async context =>
-            //     // {
-            //     //     var tokenAcquisition = context.HttpContext.RequestServices
-            //     //         .GetRequiredService<ITokenAcquisition>();
-            //     //     var logger = context.HttpContext.RequestServices
-            //     //         .GetRequiredService<ILogger<Startup>>();
-            //     //     var token = await tokenAcquisition
-            //     //         .GetAccessTokenForUserAsync(initialScopes, user: context.Principal);
-
-            //     //     var graphClient = new GraphServiceClient(
-            //     //         new DelegateAuthenticationProvider(async (request) =>
-            //     //         {
-            //     //             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            //     //         })
-            //     //     );
-
-            //     //     // Example of using graphClient
-            //     //     var profile = await graphClient.Me.Request().GetAsync();
-            //     //     logger.LogInformation(profile.GivenName);
-            //     // };
-
-            //     options.Events.OnAuthenticationFailed = context =>
-            //     {
-            //         var error = WebUtility.UrlEncode(context.Exception.Message);
-            //         context.Response
-            //             .Redirect($"/Home/ErrorWithMessage?message=Authentication+error&debug={error}");
-            //         context.HandleResponse();
-
-            //         return Task.FromResult(0);
-            //     };
-
-            //     options.Events.OnRemoteFailure = context =>
-            //     {
-            //         if (context.Failure is OpenIdConnectProtocolException)
-            //         {
-            //             var error = WebUtility.UrlEncode(context.Failure.Message);
-            //             context.Response
-            //                 .Redirect($"/Home/ErrorWithMessage?message=Sign+in+error&debug={error}");
-            //             context.HandleResponse();
-            //         }
-
-            //         return Task.FromResult(0);
-            //     };
-            // })
-            // .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
-            // .AddMicrosoftGraph(Configuration.GetSection("DownstreamApi"))
-            // .AddInMemoryTokenCaches();
-
-            // uncomment the following 3 lines to get ClientSecret from KeyVault
-            // string tenantId = Configuration.GetValue<string>("AzureAd:TenantId");
-            // services.Configure<MicrosoftIdentityOptions>(
-            //    options => { options.ClientSecret = GetSecretFromKeyVault(tenantId, "ENTER_YOUR_SECRET_NAME_HERE"); });
-
             services.AddScoped<GraphProfileClient>();
-
-
+            services.AddScoped<GraphEmailClient>();
+            services.AddScoped<GraphCalendarClient>();
+            services.AddScoped<GraphFilesClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
