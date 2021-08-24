@@ -10,13 +10,13 @@
     {
         if (Model.Events != null && Model.Events.Any()) {
             @* Add foreach statement here *@
-            @foreach(var evt in Model.Events) 
-            {
+
+
                  <div class="card" style="width: 50rem;">
                     <div class="card-body">
                         <h5 class="card-title">
                             @* Add event subject here *@
-                            @evt.Subject 
+   
                         </h5>
                         <p class="card-text">
                             <div class="container">
@@ -26,7 +26,7 @@
                                     </div>
                                     <div class="col">
                                         @* Add event start date/time here *@
-                                        @Model.FormatDateTimeTimeZone(evt.Start)
+
                                     </div>
                                 </div>
                                 <div class="row">
@@ -35,7 +35,7 @@
                                     </div>
                                     <div class="col">
                                         @* Add event end date/time here *@
-                                        @Model.FormatDateTimeTimeZone(evt.End)
+
                                     </div>
                                 </div>
                             </div>
@@ -44,7 +44,7 @@
                 </div>
                 <br />
             @* Add foreach closing bracket here *@
-            }
+
         }
         else {
             <div>No calendar events found</div>

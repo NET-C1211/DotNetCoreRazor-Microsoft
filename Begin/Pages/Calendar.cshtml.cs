@@ -32,10 +32,8 @@ namespace DotNetCoreRazor_MSGraph.Pages
 
         public async Task OnGetAsync()
         {
-            MailboxSettings = await _graphCalendarClient.GetUserMailboxSettings();
-            var userTimeZone = (String.IsNullOrEmpty(MailboxSettings.TimeZone)) 
-                                ? "Pacific Standard Time" : MailboxSettings.TimeZone;
-            Events = await _graphCalendarClient.GetEvents(userTimeZone);
+            // Remove this code
+           await Task.CompletedTask;
         }
 
         public string FormatDateTimeTimeZone(DateTimeTimeZone value)
