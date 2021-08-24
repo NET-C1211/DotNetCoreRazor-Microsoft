@@ -17,14 +17,16 @@ namespace DotNetCoreRazor_MSGraph.Graph
         private readonly ILogger<GraphEmailClient> _logger = null;
         private readonly GraphServiceClient _graphServiceClient = null;
 
-        public GraphEmailClient(ILogger<GraphEmailClient> logger, GraphServiceClient graphServiceClient)
+        public GraphEmailClient()
         {
-            _logger = logger;
-            _graphServiceClient = graphServiceClient;
+
         }
 
         public async Task<IEnumerable<Message>> GetUserMessages()
         {
+            // Remove this code
+            return await Task.FromResult<IEnumerable<Message>>(null);
+
             try
             {
                 var emails = await _graphServiceClient.Me.Messages
@@ -32,11 +34,10 @@ namespace DotNetCoreRazor_MSGraph.Graph
                             .Select(msg => new
                             {
                                 msg.Subject,
-                                msg.Body,
                                 msg.BodyPreview,
                                 msg.ReceivedDateTime
                             })
-                            .OrderBy("receivedDateTime")
+                            .OrderBy("receivedDateTime desc")
                             .Top(10)
                             .GetAsync();
 
@@ -44,7 +45,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Error calling Graph /me/messages: {ex.Message}");
+                _logger.LogError($"Error calling Graph /me/messages: {ex.Message}");
                 throw;
             }
         }
@@ -55,28 +56,35 @@ namespace DotNetCoreRazor_MSGraph.Graph
             int top = 5;
             IUserMessagesCollectionPage pagedMessages;
             
-            if (nextPageLink == null) 
+            try 
             {
-                // Get initial page of messages
-                pagedMessages = await _graphServiceClient.Me.Messages
-                        .Request()
-                        .Select(msg => new
-                        {
-                            msg.Subject,
-                            msg.Body,
-                            msg.BodyPreview,
-                            msg.ReceivedDateTime
-                        })
-                        .Top(top)
-                        .OrderBy("receivedDateTime desc")
-                        .GetAsync();
+                if (nextPageLink == null) 
+                {
+                    // Get initial page of messages
+                    pagedMessages = await _graphServiceClient.Me.Messages
+                            .Request()
+                            .Select(msg => new
+                            {
+                                msg.Subject,
+                                msg.BodyPreview,
+                                msg.ReceivedDateTime
+                            })
+                            .Top(top)
+                            .OrderBy("receivedDateTime desc")
+                            .GetAsync();
+                }
+                else 
+                {
+                    // Use nextLink value to get the page of messages
+                    UserMessagesCollectionRequest messagesCollectionRequest = 
+                        new UserMessagesCollectionRequest(nextPageLink, _graphServiceClient, null);
+                    pagedMessages = await messagesCollectionRequest.GetAsync();
+                }
             }
-            else 
+            catch (Exception ex)
             {
-                // Use nextLink value to get the page of messages
-                UserMessagesCollectionRequest messagesCollectionRequest = 
-                    new UserMessagesCollectionRequest(nextPageLink, _graphServiceClient, null);
-                pagedMessages = await messagesCollectionRequest.GetAsync();
+                _logger.LogError($"Error calling Graph /me/messages to page messages: {ex.Message}");
+                throw;
             }
 
             return (Messages: pagedMessages, NextLink: GetNextLink(pagedMessages));

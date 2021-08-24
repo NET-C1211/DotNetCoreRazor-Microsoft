@@ -46,7 +46,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"/me Error: {ex.Message}");
+                _logger.LogError($"/me Error: {ex.Message}");
                 throw;
             }
         }

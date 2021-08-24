@@ -58,7 +58,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Error calling Graph /me/calendaview: {ex.Message}");
+                _logger.LogError($"Error calling Graph /me/calendaview: {ex.Message}");
                 throw;
             }
         }
@@ -81,7 +81,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"/me Error: {ex.Message}");
+                _logger.LogError($"/me Error: {ex.Message}");
                 throw;
             }
         }

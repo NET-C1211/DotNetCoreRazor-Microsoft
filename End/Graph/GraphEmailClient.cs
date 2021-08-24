@@ -32,7 +32,6 @@ namespace DotNetCoreRazor_MSGraph.Graph
                             .Select(msg => new
                             {
                                 msg.Subject,
-                                msg.Body,
                                 msg.BodyPreview,
                                 msg.ReceivedDateTime
                             })
@@ -44,7 +43,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Error calling Graph /me/messages: {ex.Message}");
+                _logger.LogError($"Error calling Graph /me/messages: {ex.Message}");
                 throw;
             }
         }
@@ -63,7 +62,6 @@ namespace DotNetCoreRazor_MSGraph.Graph
                         .Select(msg => new
                         {
                             msg.Subject,
-                            msg.Body,
                             msg.BodyPreview,
                             msg.ReceivedDateTime
                         })

@@ -38,7 +38,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Error calling Graph /me/drive/root/children: {ex.Message}");
+                _logger.LogError($"Error calling Graph /me/drive/root/children: {ex.Message}");
                 throw;
             }
         }
@@ -54,7 +54,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Error downloading file: {ex.Message}");
+                _logger.LogError($"Error downloading file: {ex.Message}");
                 throw;
             }
         }
@@ -83,7 +83,8 @@ namespace DotNetCoreRazor_MSGraph.Graph
                 }
                 catch (ServiceException ex)
                 {
-                    _logger.LogInformation($"Error uploading: {ex.ToString()}");
+                    _logger.LogError($"Error uploading: {ex.ToString()}");
+                    throw;
                 }
             }
         }
@@ -139,7 +140,8 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
             catch (ServiceException ex)
             {
-                _logger.LogInformation($"Error uploading: {ex.ToString()}");
+                _logger.LogError($"Error uploading: {ex.ToString()}");
+                throw;
             }
         }
     }
