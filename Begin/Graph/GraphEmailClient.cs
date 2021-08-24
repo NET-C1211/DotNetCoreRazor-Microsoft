@@ -14,7 +14,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
 {
     public class GraphEmailClient
     {
-        private readonly ILogger<GraphCalendarClient> _logger = null;
+        private readonly ILogger<GraphEmailClient> _logger = null;
         private readonly GraphServiceClient _graphServiceClient = null;
 
         public GraphEmailClient(ILogger<GraphEmailClient> logger, GraphServiceClient graphServiceClient)

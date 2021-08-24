@@ -13,7 +13,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
 {
     public class GraphProfileClient
     {
-        private readonly ILogger<GraphCalendarClient> _logger;
+        private readonly ILogger<GraphProfileClient> _logger;
         private readonly GraphServiceClient _graphServiceClient;
 
         public GraphProfileClient(ILogger<GraphProfileClient> logger, GraphServiceClient graphServiceClient)
