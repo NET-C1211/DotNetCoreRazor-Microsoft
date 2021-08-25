@@ -26,33 +26,15 @@ namespace DotNetCoreRazor_MSGraph.Graph
         {
             // Remove this code
             return await Task.FromResult<IEnumerable<Message>>(null);
-
-            try
-            {
-                var emails = await _graphServiceClient.Me.Messages
-                            .Request()
-                            .Select(msg => new
-                            {
-                                msg.Subject,
-                                msg.BodyPreview,
-                                msg.ReceivedDateTime
-                            })
-                            .OrderBy("receivedDateTime desc")
-                            .Top(10)
-                            .GetAsync();
-
-                return emails.CurrentPage;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error calling Graph /me/messages: {ex.Message}");
-                throw;
-            }
         }
 
         public async Task<(IEnumerable<Message> Messages, string NextLink)> GetUserMessagesPage(
             string nextPageLink = null)
         {
+            // Remove this code
+            return await Task.FromResult<
+                (IEnumerable<Message> Messages, string NextLink)>((Messages:null, NextLink:null));
+
             int top = 5;
             IUserMessagesCollectionPage pagedMessages;
             

@@ -9,7 +9,8 @@
     @if (User.Identity.IsAuthenticated)
     {
         if (Model.Messages != null && Model.Messages.Any()) {
-            @foreach(var message in Model.Messages) {
+            @foreach(var message in Model.Messages) 
+            {
                 <div class="card" style="width: 50rem;">
                     <div class="card-body">
                         <h5 class="card-title">@message.Subject</h5>
