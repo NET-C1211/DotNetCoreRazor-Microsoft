@@ -34,41 +34,6 @@ namespace DotNetCoreRazor_MSGraph.Graph
             // Remove this code
             return await Task.FromResult<
                 (IEnumerable<Message> Messages, string NextLink)>((Messages:null, NextLink:null));
-
-            IUserMessagesCollectionPage pagedMessages;
-            
-            try 
-            {
-                if (nextPageLink == null) 
-                {
-                    // Get initial page of messages
-                    pagedMessages = await _graphServiceClient.Me.Messages
-                            .Request()
-                            .Select(msg => new
-                            {
-                                msg.Subject,
-                                msg.BodyPreview,
-                                msg.ReceivedDateTime
-                            })
-                            .Top(top)
-                            .OrderBy("receivedDateTime desc")
-                            .GetAsync();
-                }
-                else 
-                {
-                    // Use nextLink value to get the page of messages
-                    UserMessagesCollectionRequest messagesCollectionRequest = 
-                        new UserMessagesCollectionRequest(nextPageLink, _graphServiceClient, null);
-                    pagedMessages = await messagesCollectionRequest.GetAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error calling Graph /me/messages to page messages: {ex.Message}");
-                throw;
-            }
-
-            return (Messages: pagedMessages, NextLink: GetNextLink(pagedMessages));
         }
 
         private string GetNextLink(IUserMessagesCollectionPage pagedMessages) {

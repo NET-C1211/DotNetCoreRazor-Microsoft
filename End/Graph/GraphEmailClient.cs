@@ -70,7 +70,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             }
             else 
             {
-                // Use nextLink value to get the page of messages
+                // Use the value of @odata.nextLink to get the page of messages
                 UserMessagesCollectionRequest messagesCollectionRequest = 
                     new UserMessagesCollectionRequest(nextPageLink, _graphServiceClient, null);
                 pagedMessages = await messagesCollectionRequest.GetAsync();
