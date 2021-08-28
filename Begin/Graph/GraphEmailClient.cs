@@ -29,13 +29,12 @@ namespace DotNetCoreRazor_MSGraph.Graph
         }
 
         public async Task<(IEnumerable<Message> Messages, string NextLink)> GetUserMessagesPage(
-            string nextPageLink = null)
+            string nextPageLink = null, int top = 5)
         {
             // Remove this code
             return await Task.FromResult<
                 (IEnumerable<Message> Messages, string NextLink)>((Messages:null, NextLink:null));
 
-            int top = 5;
             IUserMessagesCollectionPage pagedMessages;
             
             try 
