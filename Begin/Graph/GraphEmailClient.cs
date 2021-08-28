@@ -29,7 +29,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
         }
 
         public async Task<(IEnumerable<Message> Messages, string NextLink)> GetUserMessagesPage(
-            string nextPageLink = null, int top = 5)
+            string nextPageLink = null, int top = 10)
         {
             // Remove this code
             return await Task.FromResult<
