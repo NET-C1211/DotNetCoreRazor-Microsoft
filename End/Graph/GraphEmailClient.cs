@@ -75,7 +75,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
                     new UserMessagesCollectionRequest(nextPageLink, _graphServiceClient, null);
                 pagedMessages = await messagesCollectionRequest.GetAsync();
             }
-            // _logger.LogInformation(pagedMessages.AdditionalData["@odata.nextLink"].ToString());
+
             return (Messages: pagedMessages, NextLink: GetNextLink(pagedMessages));
         }
 
