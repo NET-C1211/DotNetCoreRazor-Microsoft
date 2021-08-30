@@ -37,8 +37,10 @@ namespace DotNetCoreRazor_MSGraph.Graph
         }
 
         private string GetNextLink(IUserMessagesCollectionPage pagedMessages) {
-            if (pagedMessages.AdditionalData.TryGetValue("@odata.nextLink", out object value)) {
-                return value.ToString();
+            if (pagedMessages.NextPageRequest != null)
+            {
+                // Get the URL for the next batch of records
+                return pagedMessages.NextPageRequest.GetHttpRequestMessage().RequestUri?.OriginalString;
             }
             return null;
         }
