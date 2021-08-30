@@ -19,7 +19,9 @@ namespace DotNetCoreRazor_MSGraph.Graph
 
         public GraphEmailClient()
         {
-
+            // Remove this code
+            _ = _logger;
+            _ = _graphServiceClient;
         }
 
         public async Task<IEnumerable<Message>> GetUserMessages()
