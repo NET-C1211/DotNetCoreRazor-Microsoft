@@ -25,13 +25,10 @@ namespace DotNetCoreRazor_MSGraph.Pages
     {
         private readonly ILogger<FilesModel> _logger;
         private readonly GraphFilesClient _graphFilesClient;
-        
-        [BindProperty(SupportsGet = true)]
-        public int Skip { get; set; }
 
         [BindProperty]
         public IFormFile UploadedFile { get; set; }
-        public IDriveItemChildrenCollectionPage Files  { get; private set; }
+        public IDriveItemChildrenCollectionPage Files { get; private set; }
 
         public FilesModel(ILogger<FilesModel> logger, GraphFilesClient graphFilesClient)
         {
@@ -41,28 +38,19 @@ namespace DotNetCoreRazor_MSGraph.Pages
 
         public async Task OnGetAsync()
         {
-            Files = await _graphFilesClient.GetFiles(); 
+            // Remove this code
+            await Task.CompletedTask;
         }
 
         public async Task OnPostAsync()
         {
-            if (UploadedFile == null || UploadedFile.Length == 0)
-            {
-                return;
-            }
- 
-            _logger.LogInformation($"Uploading {UploadedFile.FileName}.");
-
-            using (var stream = new MemoryStream()) {
-                await UploadedFile.CopyToAsync(stream);
-                await _graphFilesClient.UploadFile(UploadedFile.FileName, stream);
-            }
-            await OnGetAsync();
+            // Remove this code
+            await Task.CompletedTask;
         }
 
         public async Task<FileStreamResult> OnGetDownloadFile(string id, string name) {
-            var stream = await _graphFilesClient.DownloadFile(id);
-            return File(stream, MediaTypeNames.Application.Octet, name);
+            // Remove this code
+            return await Task.FromResult<FileStreamResult>(null);
         }
     }
 }

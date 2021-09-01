@@ -25,13 +25,10 @@ namespace DotNetCoreRazor_MSGraph.Pages
     {
         private readonly ILogger<FilesModel> _logger;
         private readonly GraphFilesClient _graphFilesClient;
-        
-        [BindProperty(SupportsGet = true)]
-        public int Skip { get; set; }
 
         [BindProperty]
         public IFormFile UploadedFile { get; set; }
-        public IDriveItemChildrenCollectionPage Files  { get; private set; }
+        public IDriveItemChildrenCollectionPage Files { get; private set; }
 
         public FilesModel(ILogger<FilesModel> logger, GraphFilesClient graphFilesClient)
         {

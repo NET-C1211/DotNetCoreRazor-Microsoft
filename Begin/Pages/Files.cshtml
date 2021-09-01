@@ -15,15 +15,13 @@
                 <br />
                 <label>Files in your OneDrive root folder:</label> @Model.Files.Count()
                 <ul id="downloadLinks">
-                    @foreach(var file in Model.Files) {
-                        if (file.Folder == null && file.Package == null) {
-                            <li>
-                                <a asp-page-handler="DownloadFile" 
-                                   asp-route-name="@file.Name"
-                                   asp-route-id="@file.Id">@file.Name</a>
-                            </li>
-                        }
-                    }
+
+                    @* Add foreach here *@
+
+
+       
+                    @* Add foreach closing bracket here *@
+
                 </ul>
             }
             else 
@@ -39,7 +37,6 @@
             <input asp-for="UploadedFile" type="file"></input>
             <input type="submit" value="Upload File"></input>
         </form>
-
     }
     else
     {

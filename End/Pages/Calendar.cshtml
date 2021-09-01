@@ -9,13 +9,11 @@
     @if (User.Identity.IsAuthenticated)
     {
         if (Model.Events != null && Model.Events.Any()) {
-            @* Add foreach statement here *@
             @foreach(var evt in Model.Events) 
             {
                  <div class="card" style="width: 50rem;">
                     <div class="card-body">
                         <h5 class="card-title">
-                            @* Add event subject here *@
                             @evt.Subject 
                         </h5>
                         <p class="card-text">
@@ -25,7 +23,6 @@
                                         <strong>Start:</strong>
                                     </div>
                                     <div class="col">
-                                        @* Add event start date/time here *@
                                         @Model.FormatDateTimeTimeZone(evt.Start)
                                     </div>
                                 </div>
@@ -34,7 +31,6 @@
                                          <strong>End:</strong>
                                     </div>
                                     <div class="col">
-                                        @* Add event end date/time here *@
                                         @Model.FormatDateTimeTimeZone(evt.End)
                                     </div>
                                 </div>
@@ -43,7 +39,6 @@
                     </div>
                 </div>
                 <br />
-            @* Add foreach closing bracket here *@
             }
         }
         else {

@@ -25,16 +25,10 @@ namespace DotNetCoreRazor_MSGraph.Graph
         {
             try
             {
-                return await _graphServiceClient.Me.Drive.Root.Children
-                            .Request()
-                            .Select(file => new
-                            {
-                                file.Id,
-                                file.Name,
-                                file.Folder,
-                                file.Package
-                            })
-                            .GetAsync();
+
+                // Remove this code
+                return await Task.FromResult<IDriveItemChildrenCollectionPage>(null);
+
             }
             catch (Exception ex)
             {
@@ -47,10 +41,10 @@ namespace DotNetCoreRazor_MSGraph.Graph
         {
             try
             {
-                return await _graphServiceClient
-                            .Me.Drive.Items[fileId].Content
-                            .Request()
-                            .GetAsync();
+
+                // Remove this code
+                return await Task.FromResult<Stream>(null);
+
             }
             catch (Exception ex)
             {
@@ -64,7 +58,7 @@ namespace DotNetCoreRazor_MSGraph.Graph
             var itemPath = Uri.EscapeUriString(fileName);
             var size = stream.Length / 1000;
             _logger.LogInformation($"Stream size: {size} KB");
-            if (size/1000 > 5)
+            if (size/1000 > 4)
             {
                 // Allows slices of a large file to be uploaded 
                 // Optional but supports progress and resume capabilities if needed
@@ -107,36 +101,13 @@ namespace DotNetCoreRazor_MSGraph.Graph
             };
 
             // Create the upload session
-            var uploadSession = await _graphServiceClient.Me.Drive.Root
-                .ItemWithPath(itemPath)
-                .CreateUploadSession(uploadProps)
-                .Request()
-                .PostAsync();
 
-            // Max slice size must be a multiple of 320 KiB
-            int maxSliceSize = 320 * 1024;
-            var fileUploadTask =
-                new LargeFileUploadTask<DriveItem>(uploadSession, stream, maxSliceSize);
-
-            // Create a callback that is invoked after each slice is uploaded
-            IProgress<long> progress = new Progress<long>(prog =>
-            {
-                _logger.LogInformation($"Uploaded {prog} bytes of {stream.Length} bytes");
-            });
 
             try
             {
-                // Upload the file
-                var uploadResult = await fileUploadTask.UploadAsync(progress);
+                // Remove this code
+                await Task.CompletedTask;
 
-                if (uploadResult.UploadSucceeded)
-                {
-                    _logger.LogInformation($"Upload complete, item ID: {uploadResult.ItemResponse.Id}");
-                }
-                else
-                {
-                    _logger.LogInformation("Upload failed");
-                }
             }
             catch (ServiceException ex)
             {
