@@ -15,10 +15,11 @@ namespace DotNetCoreRazor_MSGraph.Graph
         private readonly ILogger<GraphFilesClient> _logger = null;
         private readonly GraphServiceClient _graphServiceClient = null;
 
-        public GraphFilesClient(ILogger<GraphFilesClient> logger, GraphServiceClient graphServiceClient)
+        public GraphFilesClient()
         {
-            _logger = logger;
-            _graphServiceClient = graphServiceClient;
+            // Remove this code
+            _ = _logger;
+            _ = _graphServiceClient;
         }
 
         public async Task<IDriveItemChildrenCollectionPage> GetFiles()
