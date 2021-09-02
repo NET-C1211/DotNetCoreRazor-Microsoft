@@ -19,7 +19,9 @@ namespace DotNetCoreRazor_MSGraph.Graph
 
         public GraphCalendarClient()
         {
-
+            // Remove this code
+            _ = _logger;
+            _ = _graphServiceClient;
         }
 
         public async Task<IEnumerable<Event>> GetEvents(string userTimeZone)
